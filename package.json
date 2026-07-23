@@ -4,16 +4,27 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch src/server.ts",
+    "prisma:generate": "prisma generate",
+    "build": "npm run prisma:generate && tsc",
+    "start": "node dist/server.js",
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jonatasem/dvec-e.git"
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@prisma/client": "6.19",
+    "dotenv": "^17.4.2",
+    "fastify": "^5.10.0"
   },
-  "keywords": [],
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/jonatasem/dvec-e/issues"
+  "devDependencies": {
+    "@types/node": "^26.1.0",
+    "prisma": "6.19",
+    "tsx": "^4.23.0",
+    "typescript": "^6.0.3"
   },
-  "homepage": "https://github.com/jonatasem/dvec-e#readme"
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "prisma@6.19.3": true,
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.3": true
+  }
 }
