@@ -16,5 +16,5 @@ model Dvec {
   status_instalacao         Boolean  @default(false)
   status_configuracao       Boolean  @default(false)
   
-  @@map("collaborator")
+  @@map("dvec")
 }

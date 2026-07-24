@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import prismaClient from "../prisma/index";
 
 interface CreateDvecProps {
     frota: string;
@@ -23,12 +23,24 @@ export class CreateDvecService {
         }        
 
         // Verificar a existencia da frota
+        const ExistingFleet = await prismaClient.dvec.findUnique({
+            where: {
+                frota: frota,
+            },
+        });
 
-        if(frota){
+        if(ExistingFleet){
             throw new Error("Essa frota já foi cadastrada.");
         }
 
-        
+        const dvec = await prismaClient.dvec.create({
+            data: {
+                frota: frota,
+                atividade: atividade,
+                qth: qth
+            },
+        });
 
+        return dvec;
     }
 }
