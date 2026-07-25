@@ -1,51 +1,27 @@
-import { useEffect, useState } from "react"
-import { type ListDevProps, ListDvecService } from "./services/ListDvecService";
+import ListDvec from "./components/ListDvec";
 
-function App() {
-
-  const [dvecs, setDvecs] = useState<ListDevProps[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadDvec(){
-      try {
-        const data = await ListDvecService();
-        setDvecs(data);
-      } catch(error) {
-        alert(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadDvec();
-  }, []);
-
-  if(loading){
-    return <p>Carregando frota...</p>
-  }
-
+export default function App() {
   return (
-    <>
-      <main className="p-8">
-        <h1 className="text-2xl front-bold mb-4">Lista de Equipamentos</h1>
-        {dvecs.length === 0 ? (
-          <p>Nenhum Equipamento Cadastrado.</p>
-        ) : (
-          <ul className="space-y-2">
-            {dvecs.map((item) => (
-              <li key={item.id} className="p-4 border rounded shadow-sm">
-                <p><strong>Frota:</strong> {item.frota}</p>
-                <p><strong>Atividade:</strong> {item.atividade}</p>
-                <p><strong>Instalado:</strong> {item.status_instalacao ? "Sim" : "Não"}</p>
-                <p><strong>Configurado:</strong> {item.status_configuracao ? "Sim" : "Não"}</p>
-              </li>
-            ))}
-          </ul>
-        )
-      }
-      </main>
-    </>
-  )
-}
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+      {/* Navbar Superior */}
+      <header className="border-b border-slate-800/80 bg-slate-900/50 backdrop-blur-md sticky top-0 z-40">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-xl">
+              🚛
+            </div>
+            <div>
+              <h1 className="font-bold text-lg leading-tight text-slate-100">DVEC System</h1>
+              <p className="text-xs text-slate-400">Gestão de Frotas e Equipamentos</p>
+            </div>
+          </div>
+        </div>
+      </header>
 
-export default App
+      {/* Conteúdo Principal */}
+      <main className="flex-1 max-w-6xl w-full mx-auto p-6 md:p-8">
+        <ListDvec />
+      </main>
+    </div>
+  );
+}

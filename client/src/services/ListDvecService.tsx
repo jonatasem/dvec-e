@@ -1,25 +1,26 @@
+import axios from "axios";
+import { api } from "../lib/api";
 
 export interface ListDevProps {
-    id: string;
-    frota: string;
-    atividade: string;
-    qth: string;
-    status_instalacao: boolean,
-    status_configuracao: boolean
+  id: string;
+  frota: string;
+  atividade: string;
+  qth: string;
+  status_instalacao: boolean;
+  status_configuracao: boolean;
 }
 
 export async function ListDvecService(): Promise<ListDevProps[]> {
-    const response = await fetch("http://localhost:3333/dvec", {
-        method: "GET",
-    });
+  try {
+    const response = await api.get<ListDevProps[]>("/dvec");
+    return response.data;
+  } catch (error: unknown) {
+    let errorMessage = "Erro ao buscar a lista de frotas.";
 
-    const result = await response.json();    
-
-    if(!response.ok){
-        throw new Error(result.message || "Erro ao buscar a lista de frotas.");
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || errorMessage;
     }
 
-    console.log(result);
-    
-    return result;
+    throw new Error(errorMessage, { cause: error });
+  }
 }
