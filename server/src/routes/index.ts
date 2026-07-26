@@ -5,10 +5,10 @@ import type {
   FastifyReply,
 } from "fastify";
 
-import { CreateDvecController } from "../controllers/CreateDvecController";
-import { ListDvecController } from "../controllers/ListDvecController";
-import { DeleteDvecController } from "../controllers/DeleteDvecController";
-import { UpdateDvecController } from "../controllers/UpdateDvecController";
+import { CreateDvecController } from "../controllers/CreateDvecController.js";
+import { ListDvecController } from "../controllers/ListDvecController.js";
+import { DeleteDvecController } from "../controllers/DeleteDvecController.js";
+import { UpdateDvecController } from "../controllers/UpdateDvecController.js";
 
 export async function routes(
   fastify: FastifyInstance,

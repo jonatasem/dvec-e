@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
-import { DeleteDvecService } from "../services/DeleteDvecService";
+import { DeleteDvecService } from "../services/DeleteDvecService.js";
 
 export class DeleteDvecController {
   async handle(request: FastifyRequest, reply: FastifyReply) {

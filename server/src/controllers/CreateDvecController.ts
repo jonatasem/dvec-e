@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
-import { CreateDvecService } from "../services/CreateDvecService";
+import { CreateDvecService } from "../services/CreateDvecService.js";
 
 interface CreateDvecProps {
     frota: string;

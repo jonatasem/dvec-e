@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
-import { ListDvecService } from "../services/ListDvecService";
+import { ListDvecService } from "../services/ListDvecService.js";
 
 export class ListDvecController {
     async handle(request: FastifyRequest, reply: FastifyReply){
