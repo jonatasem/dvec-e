@@ -2,7 +2,7 @@
   "name": "dvec-e",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/server.js",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
@@ -12,16 +12,13 @@
   },
   "dependencies": {
     "@fastify/cors": "^11.3.0",
-    "@types/node": "^26.1.0",
-    "fastify": "^5.10.0",
-    "prisma": "6.19",
-    "tsx": "^4.23.0",
-    "typescript": "^6.0.3"
+    "@prisma/client": "^6.19.3",
+    "fastify": "^5.10.0"
   },
-  "allowScripts": {
-    "esbuild@0.28.1": true,
-    "prisma@6.19.3": true,
-    "@prisma/client@6.19.3": true,
-    "@prisma/engines@6.19.3": true
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "prisma": "^6.19.3",
+    "tsx": "^4.23.0",
+    "typescript": "^5.7.0"
   }
 }

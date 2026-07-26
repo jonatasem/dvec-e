@@ -9,7 +9,6 @@ export default function ListDvec() {
   const [loading, setLoading] = useState(true);
   const [editingDvec, setEditingDvec] = useState<ListDevProps | null>(null);
 
-  // 🎯 Estados dos Filtros
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedQth, setSelectedQth] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("todos");
@@ -31,27 +30,42 @@ export default function ListDvec() {
     }
 
     loadDvec();
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  // 🔍 1. Extrai a lista de QTHs únicos para popular o <select> automaticamente
+  const stats = useMemo(() => {
+    const total = dvecs.length;
+    const instalados = dvecs.filter((item) => item.status_instalacao).length;
+    const pendentesInstalacao = total - instalados;
+    const configurados = dvecs.filter((item) => item.status_configuracao).length;
+    const pendentesConfiguracao = total - configurados;
+
+    return {
+      total,
+      instalados,
+      pendentesInstalacao,
+      configurados,
+      pendentesConfiguracao,
+    };
+  }, [dvecs]);
+
+  // 🔍 2. QTHs únicos para o select
   const uniqueQths = useMemo(() => {
     const qths = dvecs.map((item) => item.qth).filter(Boolean);
     return Array.from(new Set(qths)).sort();
   }, [dvecs]);
 
-  // 🔍 2. Aplica todos os filtros na lista
+  // 🔍 3. Filtro dos equipamentos
   const filteredDvecs = useMemo(() => {
     return dvecs.filter((item) => {
-      // Filtro de Busca (Frota ou Atividade)
       const matchesSearch =
         item.frota.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.atividade.toLowerCase().includes(searchTerm.toLowerCase());
 
-      // Filtro por QTH (Local)
       const matchesQth = selectedQth === "" || item.qth === selectedQth;
 
-      // Filtro por Status (Instalação / Configuração)
       let matchesStatus = true;
       if (selectedStatus === "instalado") matchesStatus = item.status_instalacao;
       if (selectedStatus === "nao_instalado") matchesStatus = !item.status_instalacao;
@@ -62,7 +76,6 @@ export default function ListDvec() {
     });
   }, [dvecs, searchTerm, selectedQth, selectedStatus]);
 
-  // 🧹 Função para limpar filtros
   function handleClearFilters() {
     setSearchTerm("");
     setSelectedQth("");
@@ -85,8 +98,74 @@ export default function ListDvec() {
 
   return (
     <div>
-      {/* Formulário de Cadastro Integrado */}
+      {/* Formulário de Cadastro */}
       <FormDvec onSuccess={handleAddSuccess} />
+
+      {/* 📊 PAINEL DE MÉTRICAS / RESUMO DO RELATÓRIO */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+        {/* Total de Frotas */}
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between shadow-md">
+          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Total Frotas
+          </span>
+          <div className="flex items-baseline justify-between mt-2">
+            <span className="text-2xl font-bold text-slate-100">{stats.total}</span>
+            <span className="text-sm">🚛</span>
+          </div>
+        </div>
+
+        {/* Instalados */}
+        <div className="bg-slate-900 border border-emerald-500/20 rounded-xl p-4 flex flex-col justify-between shadow-md">
+          <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+            Instalados
+          </span>
+          <div className="flex items-baseline justify-between mt-2">
+            <span className="text-2xl font-bold text-emerald-400">{stats.instalados}</span>
+            <span className="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-medium">
+              ✓ OK
+            </span>
+          </div>
+        </div>
+
+        {/* Instalação Pendente */}
+        <div className="bg-slate-900 border border-rose-500/20 rounded-xl p-4 flex flex-col justify-between shadow-md">
+          <span className="text-xs font-semibold text-rose-400 uppercase tracking-wider">
+            Inst. Pendentes
+          </span>
+          <div className="flex items-baseline justify-between mt-2">
+            <span className="text-2xl font-bold text-rose-400">{stats.pendentesInstalacao}</span>
+            <span className="text-xs bg-rose-500/10 text-rose-400 px-2 py-0.5 rounded border border-rose-500/20 font-medium">
+              ✕ Pendente
+            </span>
+          </div>
+        </div>
+
+        {/* Configurados */}
+        <div className="bg-slate-900 border border-cyan-500/20 rounded-xl p-4 flex flex-col justify-between shadow-md">
+          <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
+            Configurados
+          </span>
+          <div className="flex items-baseline justify-between mt-2">
+            <span className="text-2xl font-bold text-cyan-400">{stats.configurados}</span>
+            <span className="text-xs bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded border border-cyan-500/20 font-medium">
+              ⚙️ OK
+            </span>
+          </div>
+        </div>
+
+        {/* Configuração Pendente */}
+        <div className="bg-slate-900 border border-amber-500/20 rounded-xl p-4 flex flex-col justify-between shadow-md">
+          <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
+            Config. Pendentes
+          </span>
+          <div className="flex items-baseline justify-between mt-2">
+            <span className="text-2xl font-bold text-amber-400">{stats.pendentesConfiguracao}</span>
+            <span className="text-xs bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/20 font-medium">
+              ⏳ Pendente
+            </span>
+          </div>
+        </div>
+      </div>
 
       {/* 🔍 BARRA DE FILTROS */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-6 shadow-md space-y-3">
@@ -105,7 +184,6 @@ export default function ListDvec() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {/* Busca por Frota / Atividade */}
           <div>
             <label className="block text-xs text-slate-400 mb-1">Buscar por Frota/Atividade</label>
             <input
@@ -117,7 +195,6 @@ export default function ListDvec() {
             />
           </div>
 
-          {/* Filtro por QTH (Local) */}
           <div>
             <label className="block text-xs text-slate-400 mb-1">QTH (Local)</label>
             <select
@@ -134,7 +211,6 @@ export default function ListDvec() {
             </select>
           </div>
 
-          {/* Filtro por Status */}
           <div>
             <label className="block text-xs text-slate-400 mb-1">Status</label>
             <select
@@ -152,11 +228,11 @@ export default function ListDvec() {
         </div>
       </div>
 
-      {/* Cabeçalho da Lista com Contador */}
+      {/* CABEÇALHO DA LISTA */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-slate-100">Equipamentos Cadastrados</h2>
         <span className="text-xs bg-slate-900 border border-slate-800 text-slate-400 px-3 py-1 rounded-full">
-          Exibindo: <strong className="text-slate-200">{filteredDvecs.length}</strong> de {dvecs.length}
+          Exibindo <strong className="text-slate-200">{filteredDvecs.length}</strong> de {dvecs.length}
         </span>
       </div>
 
@@ -167,13 +243,13 @@ export default function ListDvec() {
         </div>
       ) : filteredDvecs.length === 0 ? (
         <div className="p-8 text-center text-slate-500 bg-slate-900/50 rounded-xl border border-slate-800 space-y-2">
-          <p>Nenhum equipamento encontrado com os filtros selecionados.</p>
+          <p>Nenhum equipamento encontrado.</p>
           {(searchTerm || selectedQth || selectedStatus !== "todos") && (
             <button
               onClick={handleClearFilters}
               className="text-xs text-blue-400 hover:underline"
             >
-              Clique aqui para limpar os filtros
+              Limpar filtros
             </button>
           )}
         </div>
